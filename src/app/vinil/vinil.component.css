@@ -1,0 +1,317 @@
+/* MAIN LAYOUT */
+.main-content {
+    display: flex;
+    justify-content: space-between;
+    padding: 150px 50px 200px;
+  }
+  
+  .left-side {
+    flex: 1;
+  }
+  
+  .main-title {
+    font-family: 'Anton', sans-serif;
+    font-size: clamp(5rem, 9vw, 10rem);
+    line-height: 0.9;
+    margin-bottom: 40px;
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  
+  .badges {
+    display: flex;
+    gap: 15px;
+  }
+  
+  .badge {
+    border: 2px solid #000;
+    border-radius: 30px;
+    padding: 8px 16px;
+  }
+  
+  /* === VINIL PLAYER === */
+  .right-side {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 35px;
+    margin-top: 40px;
+  }
+  
+  .vinyl-container {
+    width: 260px;
+    height: 260px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #2a2a2a, #1a1a1a);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.4);
+    opacity: 0;
+    transform: translateX(40px);
+  }
+  
+  .vinyl-grooves {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: repeating-radial-gradient(circle at center,
+        transparent 0px, transparent 8px,
+        rgba(255, 255, 255, 0.06) 8px, rgba(255, 255, 255, 0.06) 10px);
+    animation: spin 20s linear infinite;
+  }
+  
+  .vinyl-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 4px solid #000;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.5);
+    z-index: 2;
+  }
+  
+  .vinyl-center img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    animation: spin 20s linear infinite;
+  }
+  
+  .vinyl-hole {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #000;
+    box-shadow:
+      inset 0 2px 4px rgba(0, 0, 0, 0.8),
+      0 0 8px rgba(0, 0, 0, 0.5);
+    z-index: 3;
+  }
+  
+  @keyframes spin {
+    from {
+      transform: rotate(0);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  
+  /* CONTROLS */
+  .music-controls {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .music-controls button {
+    background: rgba(0, 0, 0, 0.8);
+    color: #c4f82a;
+    border-radius: 50%;
+    width: 46px;
+    height: 46px;
+    border: 2px solid #c4f82a;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.3s;
+    cursor: pointer;
+  }
+  
+  .music-controls button:hover {
+    background: #c4f82a;
+    color: #000;
+    transform: scale(1.1);
+  }
+  
+  .volume-control {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .volume-slider {
+    width: 120px;
+    height: 4px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 2px;
+    cursor: pointer;
+    outline: none;
+  }
+  
+  .volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #c4f82a;
+    border: 2px solid #000;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  
+  /* INFO */
+  .music-info {
+    text-align: center;
+    max-width: 400px;
+  }
+  
+  .track-name {
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 12px;
+  }
+  
+  .artist-name {
+    font-size: 14px;
+    font-style: italic;
+    color: #333;
+    margin-bottom: 12px;
+  }
+  
+  .description {
+    font-size: 13px;
+    line-height: 1.5;
+    color: #444;
+  }
+  
+  /* Arrow circle (se usar) */
+  .arrow-circle {
+    position: absolute;
+    bottom: 180px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    z-index: 2000;
+    transition: all 0.3s ease;
+    text-decoration: none;
+  }
+  
+  .arrow-circle::after {
+    content: '↗';
+    color: #c4f82a;
+    font-size: 26px;
+    font-weight: bold;
+    pointer-events: none;
+  }
+  
+  .arrow-circle:focus {
+    outline: none;
+  }
+  
+  /* RESPONSIVIDADE */
+  @media (max-width: 768px) {
+    .main-content {
+      flex-direction: column;
+      align-items: center;
+      padding: 120px 20px;
+    }
+  
+    .right-side {
+      gap: 25px;
+      margin-top: 30px;
+    }
+  
+    .vinyl-container {
+      width: 200px;
+      height: 200px;
+    }
+  
+    .vinyl-center {
+      width: 80px;
+      height: 80px;
+    }
+  
+    .vinyl-hole {
+      width: 14px;
+      height: 14px;
+    }
+  
+    .music-controls button {
+      width: 38px;
+      height: 38px;
+      font-size: 12px;
+    }
+  
+    .music-controls {
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+  
+    .volume-slider {
+      width: 100px;
+    }
+  
+    .arrow-circle {
+      bottom: 100px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .right-side {
+      gap: 20px;
+      margin-top: 20px;
+    }
+  
+    .vinyl-container {
+      width: 160px;
+      height: 160px;
+    }
+  
+    .vinyl-center {
+      width: 70px;
+      height: 70px;
+    }
+  
+    .vinyl-hole {
+      width: 12px;
+      height: 12px;
+    }
+  
+    .music-controls button {
+      width: 34px;
+      height: 34px;
+      font-size: 11px;
+    }
+  
+    .track-name {
+      font-size: 15px;
+    }
+  
+    .artist-name,
+    .description {
+      font-size: 12px;
+    }
+  
+    .volume-control {
+      flex-direction: column;
+      gap: 5px;
+    }
+  
+    .volume-slider {
+      width: 100px;
+    }
+  }
+  

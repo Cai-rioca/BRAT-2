@@ -1,0 +1,13 @@
+<header class="header">
+    <div class="logo">Das Grune</div>
+    <nav class="nav" [class.active]="isNavOpen">
+      <a>ABOUT</a>
+      <a>PROJECTS</a>
+      <a>SERVICES</a>
+      <a>LET'S TALK</a>
+    </nav>
+    <div class="hamburger" (click)="toggleNav()">
+      <span></span><span></span><span></span>
+    </div>
+  </header>
+  
