@@ -1,10 +1,15 @@
 import { Component, AfterViewInit } from '@angular/core';
-import gsap from 'gsap';
+import { RouterModule } from '@angular/router';
+import { gsap } from 'gsap';
+
 
 declare var SC: any;
 
 @Component({
   selector: 'app-vinil',
+  imports: [
+    RouterModule
+  ],
   templateUrl: './vinil.component.html',
   styleUrls: ['./vinil.component.css']
 })
@@ -46,26 +51,26 @@ export class VinilComponent implements AfterViewInit {
       let isPlaying = false, trackIndex = 0;
 
       const tracks = [
-        { 
-          url: "https://api.soundcloud.com/tracks/293", 
-          name: "Mellow Sunrise", 
-          artist: "Forss", 
-          description: "Smooth electronic vibes that transport you to another dimension.", 
-          cover: "https://i1.sndcdn.com/artworks-000000000000-0-t500x500.jpg" 
+        {
+          url: "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/293",
+          name: "Mellow Sunrise",
+          artist: "Forss",
+          description: "Smooth electronic vibes that transport you to another dimension.",
+          cover: "https://i1.sndcdn.com/artworks-000000000000-0-t500x500.jpg"
         },
-        { 
-          url: "https://api.soundcloud.com/tracks/1123049251", 
-          name: "YaSuKe 弥助", 
-          artist: "Sim Production", 
-          description: "Futuristic soundscape blending traditional and modern elements.", 
-          cover: "https://i1.sndcdn.com/artworks-WQGncTCPSeYOVdtC-Ucf2zg-t500x500.jpg" 
+        {
+          url: "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/1123049251",
+          name: "YaSuKe 弥助",
+          artist: "Sim Production",
+          description: "Futuristic soundscape blending traditional and modern elements.",
+          cover: "https://i1.sndcdn.com/artworks-WQGncTCPSeYOVdtC-Ucf2zg-t500x500.jpg"
         },
-        { 
-          url: "https://api.soundcloud.com/tracks/1967183415", 
-          name: "Swamp Festival", 
-          artist: "DJ Gator AIDS", 
-          description: "Underground electronic beats with experimental sound design.", 
-          cover: "https://i1.sndcdn.com/artworks-WcVRnt3QHm0mzgp3-8O03yw-t500x500.jpg" 
+        {
+          url: "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/1967183415",
+          name: "Swamp Festival",
+          artist: "DJ Gator AIDS",
+          description: "Underground electronic beats with experimental sound design.",
+          cover: "https://i1.sndcdn.com/artworks-WcVRnt3QHm0mzgp3-8O03yw-t500x500.jpg"
         }
       ];
 
@@ -133,8 +138,10 @@ export class VinilComponent implements AfterViewInit {
   }
 
   initBurger(): void {
-    const hamburger = document.querySelector('.hamburger')!;
-    const nav = document.querySelector('.nav')!;
+    const hamburger = document.querySelector('.hamburger');
+    const nav = document.querySelector('.nav');
+    if (!hamburger || !nav) return;
+
     hamburger.addEventListener('click', () => {
       nav.classList.toggle('active');
     });
@@ -155,4 +162,3 @@ export class VinilComponent implements AfterViewInit {
     });
   }
 }
-

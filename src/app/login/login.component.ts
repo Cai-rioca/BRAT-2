@@ -1,11 +1,20 @@
 import { Component } from '@angular/core';
+import { RouterModule } from '@angular/router'; 
 
 @Component({
   selector: 'app-login',
-  imports: [],
+  standalone: true,
+  imports: [RouterModule],  
   templateUrl: './login.component.html',
-  styleUrl: './login.component.css'
+  styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
 
+  
+  activeSection: string = 'login';
+
+  
+  showSection(section: string): void {
+    this.activeSection = section;
+  }
 }

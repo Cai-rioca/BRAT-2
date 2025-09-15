@@ -1,44 +1,56 @@
 <main class="main-content">
-    <section class="left-side">
-      <h1 class="main-title">DIGITIZE<br>IDEAS</h1>
-      <div class="badges">
-        <div class="badge"><a routerLink="/login">2022 Best Agency</a></div>
-        <div class="badge">World Class Agency</div>
+  <section class="left-side">
+    <h1 class="main-title">DIGITIZE<br>IDEAS</h1>
+    <div class="badges">
+      <div class="badge"><a routerLink="login">login</a></div>
+      <div class="badge">World Class Agency</div>
+    </div>
+  </section>
+
+  <section class="right-side">
+    <!-- Vinil -->
+    <div class="vinyl-container">
+      <div class="vinyl-grooves"></div>
+      <div class="vinyl-center">
+        <img id="trackImage"
+          src="https://i1.sndcdn.com/artworks-000000000000-0-t500x500.jpg"
+          alt="Track Cover">
       </div>
-    </section>
-  
-    <section class="right-side">
-      <!-- Vinil -->
-      <div class="vinyl-container">
-        <div class="vinyl-grooves"></div>
-        <div class="vinyl-center">
-          <img id="trackImage"
-            src="https://i1.sndcdn.com/artworks-000000000000-0-t500x500.jpg"
-            alt="Track Cover">
-        </div>
-        <div class="vinyl-hole"></div>
+      <div class="vinyl-hole"></div>
+    </div>
+
+    <!-- Controles -->
+    <div class="music-controls">
+      <button id="prev" title="Previous"><i class="fas fa-backward"></i></button>
+      <button id="play" title="Play/Pause"><i class="fas fa-play" id="playIcon"></i></button>
+      <button id="next" title="Next"><i class="fas fa-forward"></i></button>
+      <div class="volume-control">
+        <i class="fas fa-volume-down"></i>
+        <input type="range" id="volumeSlider" class="volume-slider" min="0" max="100" value="80">
+        <i class="fas fa-volume-up"></i>
       </div>
-  
-      <!-- Controles -->
-      <div class="music-controls">
-        <button id="prev" title="Previous"><i class="fas fa-backward"></i></button>
-        <button id="play" title="Play/Pause"><i class="fas fa-play" id="playIcon"></i></button>
-        <button id="next" title="Next"><i class="fas fa-forward"></i></button>
-        <div class="volume-control">
-          <i class="fas fa-volume-down"></i>
-          <input type="range" id="volumeSlider" class="volume-slider" min="0" max="100" value="80">
-          <i class="fas fa-volume-up"></i>
-        </div>
+    </div>
+
+    <!-- Info -->
+    <div class="music-info">
+      <div class="track-name" id="trackName">Mellow Sunrise</div>
+      <div class="artist-name" id="artistName">Forss</div>
+      <div class="description" id="trackDescription">
+        Smooth electronic vibes that transport you to another dimension.
       </div>
-  
-      <!-- Info -->
-      <div class="music-info">
-        <div class="track-name" id="trackName">Mellow Sunrise</div>
-        <div class="artist-name" id="artistName">Forss</div>
-        <div class="description" id="trackDescription">
-          Smooth electronic vibes that transport you to another dimension.
-        </div>
-      </div>
-    </section>
-  </main>
-  
+    </div>
+
+    <!-- Arrow circle -->
+    <a href="https://aesthetics.fandom.com/wiki/Aesthetics_Wiki" target="_blank" class="arrow-circle"></a>
+
+    <!-- Player SoundCloud invisível -->
+    <iframe id="sc-player"
+      width="0"
+      height="0"
+      frameborder="no"
+      allow="autoplay"
+      style="display:none;"
+      src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/293&auto_play=false">
+    </iframe>
+  </section>
+</main>

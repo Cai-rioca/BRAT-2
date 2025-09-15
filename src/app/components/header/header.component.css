@@ -1,70 +1,90 @@
+/* HEADER PRINCIPAL */
 .header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 25px 50px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(196, 248, 42, 0.9);
+  backdrop-filter: blur(10px);
+  z-index: 1000;
+  opacity: 1; /* agora tá visível */
+  transition: opacity 0.5s ease;
+}
+
+.logo {
+  font-weight: bold;
+  font-size: 1.5rem;
+  color: #000;
+}
+
+/* LINKS */
+.nav {
+  display: flex;
+  gap: 40px;
+  z-index: 1100; /* garante que fique acima da timeline */
+}
+
+.nav a {
+  text-decoration: none;
+  font-weight: bold;
+  color: #000;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.nav a:hover {
+  color: #fff;
+}
+
+/* HAMBURGER */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+  gap: 6px;
+  z-index: 1200; /* sempre acima do nav */
+}
+
+.hamburger span {
+  width: 28px;
+  height: 3px;
+  background: #000;
+  border-radius: 2px;
+  transition: background 0.3s ease;
+}
+
+.hamburger:hover span {
+  background: #fff;
+}
+
+/* RESPONSIVO MOBILE */
+@media (max-width: 768px) {
+  .nav {
     position: fixed;
     top: 0;
-    left: 0;
-    right: 0;
-    padding: 25px 50px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: rgba(196, 248, 42, 0.9);
-    backdrop-filter: blur(10px);
-    z-index: 1000;
-    opacity: 0;
-    transition: opacity 0.5s ease;
-  }
-  
-  .logo {
-    font-weight: bold;
-  }
-  
-  .nav {
-    display: flex;
-    gap: 40px;
-  }
-  
-  .nav a {
-    text-decoration: none;
-    font-weight: bold;
-    color: #000;
-  }
-  
-  /* HAMBURGER */
-  .hamburger {
-    display: none;
+    right: -100%;
     flex-direction: column;
-    cursor: pointer;
-    gap: 6px;
-    z-index: 1100;
+    background: #c4f82a;
+    height: 100%;
+    width: 200px;
+    padding: 100px 20px;
+    gap: 20px;
+    transition: right 0.3s ease;
   }
-  
-  .hamburger span {
-    width: 28px;
-    height: 3px;
-    background: #000;
-    border-radius: 2px;
+
+  .nav.active {
+    right: 0;
   }
-  
-  @media (max-width: 768px) {
-    .nav {
-      position: fixed;
-      top: 0;
-      right: -100%;
-      flex-direction: column;
-      background: #c4f82a;
-      height: 100%;
-      width: 200px;
-      padding: 100px 20px;
-      gap: 20px;
-      transition: right 0.3s ease;
-    }
-  
-    .nav.active {
-      right: 0;
-    }
-  
-    .hamburger {
-      display: flex;
-    }
+
+  .hamburger {
+    display: flex;
   }
-  
+
+  .nav a {
+    font-size: 1.2rem;
+  }
+}

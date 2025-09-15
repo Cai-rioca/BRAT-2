@@ -27,7 +27,9 @@
     border: 2px solid #000;
     border-radius: 30px;
     padding: 8px 16px;
-  }
+    cursor: pointer; 
+}
+
   
   /* === VINIL PLAYER === */
   .right-side {
@@ -106,7 +108,7 @@
     }
   }
   
-  /* CONTROLS */
+  /* CONTROLES */
   .music-controls {
     display: flex;
     gap: 20px;
@@ -189,7 +191,7 @@
     color: #444;
   }
   
-  /* Arrow circle (se usar) */
+  /* Arrow circle*/
   .arrow-circle {
     position: absolute;
     bottom: 180px;

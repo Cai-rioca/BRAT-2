@@ -1,2 +1,53 @@
+<!-- LOGIN -->
+<section id="login" [class.active]="activeSection === 'login'">
+  <div class="breadcrumb"><a routerLink="">Home</a> &gt; Login</div>
+  <form>
+    <div class="inputBx"><input type="email" placeholder="Email" required></div>
+    <div class="inputBx"><input type="password" placeholder="Senha" required></div>
+    <div class="links">
+      <a (click)="showSection('forgot')">Esqueceu a senha?</a>
+      <a (click)="showSection('signup')">Criar conta</a>
+    </div>
+    <div class="inputBx"><input type="submit" value="Entrar"></div>
+  </form>
+  <div class="social-buttons">
+    <button class="social-btn google"><i class="fa-brands fa-google"></i></button>
+    <button class="social-btn github"><i class="fa-brands fa-github"></i></button>
+    <button class="social-btn facebook"><i class="fa-brands fa-facebook-f"></i></button>
+  </div>
+</section>
 
-  
+<!-- FORGOT PASSWORD -->
+<section id="forgot" [class.active]="activeSection === 'forgot'">
+  <div class="breadcrumb"><a routerLink="/vinil">Home</a> &gt; Esqueceu a Senha</div>
+  <form>
+    <div class="inputBx"><input type="email" placeholder="Digite seu email" required></div>
+    <div class="inputBx"><input type="submit" value="Enviar link"></div>
+    <div class="links"><a (click)="showSection('login')">⬅ Voltar</a></div>
+  </form>
+</section>
+
+<!-- SIGNUP -->
+<section id="signup" [class.active]="activeSection === 'signup'">
+  <div class="breadcrumb"><a routerLink="/vinil">Home</a> &gt; Criar Conta</div>
+  <form>
+    <div class="inputBx"><input type="text" placeholder="Nome completo" required></div>
+    <div class="inputBx"><input type="email" placeholder="Email" required></div>
+    <div class="inputBx"><input type="password" placeholder="Senha" required></div>
+    <div class="inputBx"><input type="password" placeholder="Confirmar Senha" required></div>
+    
+    <!-- Checkbox LGPD -->
+    <div class="lgpd-checkbox">
+      <input type="checkbox" id="lgpd-terms" required>
+      <label for="lgpd-terms">
+        Aceito os <a href="/termos" target="_blank">Termos de Uso</a> e 
+        <a href="/privacidade" target="_blank">Política de Privacidade</a>, 
+        e autorizo o tratamento dos meus dados pessoais conforme a 
+        Lei Geral de Proteção de Dados (LGPD - Lei 13.709/2018).
+      </label>
+    </div>
+    
+    <div class="inputBx"><input type="submit" value="Cadastrar"></div>
+    <div class="links"><a (click)="showSection('login')">⬅ Voltar</a></div>
+  </form>
+</section>

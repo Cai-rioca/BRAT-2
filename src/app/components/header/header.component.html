@@ -1,13 +1,12 @@
 <header class="header">
-    <div class="logo">Das Grune</div>
-    <nav class="nav" [class.active]="isNavOpen">
-      <a>ABOUT</a>
-      <a>PROJECTS</a>
-      <a>SERVICES</a>
-      <a>LET'S TALK</a>
-    </nav>
-    <div class="hamburger" (click)="toggleNav()">
-      <span></span><span></span><span></span>
-    </div>
-  </header>
-  
+  <div class="logo">Das Grune</div>
+  <nav class="nav" [class.active]="isNavOpen">
+    <a routerLink="/" routerLinkActive="active" (click)="isNavOpen=false">ABOUT</a>
+    <a routerLink="/timeline" routerLinkActive="active" (click)="isNavOpen=false">PROJECTS</a>
+    <a routerLink="/services" routerLinkActive="active" (click)="isNavOpen=false">SERVICES</a>
+    <a routerLink="/contact" routerLinkActive="active" (click)="isNavOpen=false">LET'S TALK</a>
+  </nav>
+  <div class="hamburger" (click)="toggleNav()">
+    <span></span><span></span><span></span>
+  </div>
+</header>

@@ -1,1 +1,26 @@
-/* You can add global styles to this file, and also import other style files */
+/* Fundo padrão do site */
+body {
+    font-family: 'Quicksand', sans-serif;
+    background: #c4f82a; /* verde-limão */
+    color: #000;
+    min-height: 100vh;
+    overflow-x: hidden;
+    margin: 0;
+  }
+  
+  /* Header com logo */
+  .logo {
+    font-family: 'Anton', sans-serif;
+    font-weight: bold;
+  }
+  
+  /* Barra rotativa (footer) */
+  .scrolling-text {
+    font-family: 'Anton', sans-serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 900;
+    color: #c4f82a;
+    animation: moveText 20s linear infinite;
+    letter-spacing: 2px;
+  }
+  
