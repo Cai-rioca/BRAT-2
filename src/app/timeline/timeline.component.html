@@ -1,87 +1,66 @@
-<!-- Hero Section -->
-<section class="hero">
-    <div>
-      <h1 class="hero-title">Timeline<br>da Moda</h1>
-      <p class="hero-subtitle">Uma jornada através das décadas e seus estilos únicos</p>
-    </div>
-  </section>
-  
-  <!-- Timeline -->
-  <section class="timeline-container">
-    <div class="timeline-line"></div>
-  
-    <!-- Floating star elements -->
-    <div class="floating-star" style="width: 100px; height: 100px; top: 10%; left: 10%;"></div>
-    <div class="floating-star" style="width: 60px; height: 60px; top: 30%; right: 15%;"></div>
-  
-    <!-- 1920s -->
-    <div class="timeline-item left" id="1920s">
-      <div class="timeline-dot"></div>
-      <div class="decade-card" data-decade="1920s">
-        <div class="decade-number">1920s</div>
-        <h2 class="decade-title">Era do Jazz</h2>
-        <div class="carousel-container">
-          <div class="carousel-track"></div>
+
+<!-- Timeline Section -->
+<section class="timeline-container" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">
+  <!-- Decorative Squiggles -->
+  <svg class="squiggle squiggle-1" viewBox="0 0 150 50">
+    <path d="M10,25 Q40,5 70,25 T130,25" />
+  </svg>
+  <svg class="squiggle squiggle-2" viewBox="0 0 120 40">
+    <path d="M10,20 Q30,5 50,20 T90,20 Q100,15 110,20" />
+  </svg>
+
+  <div class="timeline-wrapper">
+    <div class="timeline-track" #timelineTrack>
+      <!-- Timeline Items -->
+      <div 
+        *ngFor="let decade of decadeData; let i = index" 
+        class="timeline-item"
+        [class.active]="i === currentIndex"
+        [attr.data-decade]="decade.id">
+        
+        <div class="decade-number">{{ decade.number }}</div>
+        <h2 class="decade-title">{{ decade.title }}</h2>
+        
+        <div class="image-container">
+          <img 
+            [src]="decade.image" 
+            [alt]="'Fashion ' + decade.number" 
+            class="decade-image">
         </div>
-        <p class="decade-description"></p>
-        <div class="fashion-trends"></div>
+        
+        <p class="decade-description">
+          {{ decade.description }}
+        </p>
+        
+        <div class="fashion-trends">
+          <span 
+            *ngFor="let trend of decade.trends" 
+            class="trend-badge">
+            {{ trend }}
+          </span>
+        </div>
       </div>
     </div>
-  
-    <!-- 1950s -->
-    <div class="timeline-item right" id="1950s">
-      <div class="timeline-dot"></div>
-      <div class="decade-card" data-decade="1950s">
-        <div class="decade-number">1950s</div>
-        <h2 class="decade-title">New Look</h2>
-        <div class="carousel-container">
-          <div class="carousel-track"></div>
-        </div>
-        <p class="decade-description"></p>
-        <div class="fashion-trends"></div>
+
+    <!-- Navigation -->
+    <div class="timeline-nav">
+      <button 
+        class="nav-btn" 
+        (click)="prevSlide()"
+        [disabled]="isPrevDisabled">
+        ‹
+      </button>
+      
+      <div class="timeline-dots" #timelineDots>
+        <!-- Dots will be created dynamically -->
       </div>
+      
+      <button 
+        class="nav-btn" 
+        (click)="nextSlide()"
+        [disabled]="isNextDisabled">
+        ›
+      </button>
     </div>
-  
-    <!-- 1980s -->
-    <div class="timeline-item left" id="1980s">
-      <div class="timeline-dot"></div>
-      <div class="decade-card" data-decade="1980s">
-        <div class="decade-number">1980s</div>
-        <h2 class="decade-title">Power Dressing</h2>
-        <div class="carousel-container">
-          <div class="carousel-track"></div>
-        </div>
-        <p class="decade-description"></p>
-        <div class="fashion-trends"></div>
-      </div>
-    </div>
-  
-    <!-- 2000s -->
-    <div class="timeline-item right" id="2000s">
-      <div class="timeline-dot"></div>
-      <div class="decade-card" data-decade="2000s">
-        <div class="decade-number">2000s</div>
-        <h2 class="decade-title">Era Digital</h2>
-        <div class="carousel-container">
-          <div class="carousel-track"></div>
-        </div>
-        <p class="decade-description"></p>
-        <div class="fashion-trends"></div>
-      </div>
-    </div>
-  
-    <!-- 2020s -->
-    <div class="timeline-item left" id="2020s">
-      <div class="timeline-dot"></div>
-      <div class="decade-card" data-decade="2020s">
-        <div class="decade-number">2020s</div>
-        <h2 class="decade-title">Sustentabilidade</h2>
-        <div class="carousel-container">
-          <div class="carousel-track"></div>
-        </div>
-        <p class="decade-description"></p>
-        <div class="fashion-trends"></div>
-      </div>
-    </div>
-  </section>
-  
+  </div>
+</section>

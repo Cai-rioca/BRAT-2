@@ -1,4 +1,4 @@
-/* HEADER PRINCIPAL */
+
 .header {
   position: fixed;
   top: 0;
@@ -11,21 +11,22 @@
   background: rgba(196, 248, 42, 0.9);
   backdrop-filter: blur(10px);
   z-index: 1000;
-  opacity: 1; /* agora tá visível */
+  opacity: 1; 
   transition: opacity 0.5s ease;
 }
 
+
 .logo {
-  font-weight: bold;
-  font-size: 1.5rem;
-  color: #000;
+  max-width: 110px; 
+  height: auto;     
+  display: block;
 }
 
 /* LINKS */
 .nav {
   display: flex;
   gap: 40px;
-  z-index: 1100; /* garante que fique acima da timeline */
+  z-index: 1100; 
 }
 
 .nav a {
@@ -46,7 +47,7 @@
   flex-direction: column;
   cursor: pointer;
   gap: 6px;
-  z-index: 1200; /* sempre acima do nav */
+  z-index: 1200; 
 }
 
 .hamburger span {

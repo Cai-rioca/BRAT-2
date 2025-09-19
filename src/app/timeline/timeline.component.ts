@@ -1,7 +1,14 @@
-import { Component, AfterViewInit } from '@angular/core';
+import { Component, AfterViewInit, OnDestroy, ElementRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import gsap from 'gsap';
-import ScrollTrigger from 'gsap/ScrollTrigger';
+
+interface DecadeData {
+  id: string;
+  number: string;
+  title: string;
+  description: string;
+  trends: string[];
+  image: string;
+}
 
 @Component({
   selector: 'app-timeline',
@@ -10,149 +17,233 @@ import ScrollTrigger from 'gsap/ScrollTrigger';
   templateUrl: './timeline.component.html',
   styleUrls: ['./timeline.component.css']
 })
-export class TimelineComponent implements AfterViewInit {
+export class TimelineComponent implements AfterViewInit, OnDestroy {
+  @ViewChild('timelineTrack', { static: true }) timelineTrack!: ElementRef;
+  @ViewChild('timelineDots', { static: true }) timelineDots!: ElementRef;
 
-  decadeData: any = {
-    '1920s': [
-      {
-        description: 'A década de 1920 trouxe a revolução feminina na moda...',
-        trends: ['VESTIDOS RETOS', 'CABELO CHANEL', 'PÉROLAS LONGAS', 'SAPATOS T-BAR'],
-        image: 'https://placehold.co/600x400/FFD1D1/000000?text=Flapper+1'
-      },
-      {
-        description: 'O estilo flapper era sinônimo de liberdade e ousadia...',
-        trends: ['FRANJAS', 'PLUMAS', 'CHAPÉUS CLOCHE', 'CIGARRILHAS'],
-        image: 'https://placehold.co/600x400/FFD1D1/000000?text=Flapper+2'
-      }
-      // Adicione os outros itens da década igual no seu JSON original
-    ],
-    // 1950s, 1980s, 2000s, 2020s → mesma estrutura do JSON original
-  };
+  currentIndex = 0;
+  itemWidth = 390; // 350px + 40px gap
+  visibleItems = 1;
+  autoPlayInterval: any;
+  
+  decadeData: DecadeData[] = [
+    {
+      id: '1920s',
+      number: '1920s',
+      title: 'Era do Jazz',
+      description: 'A revolução feminina na moda com vestidos retos, cabelos à la garçonne e o estilo flapper que simbolizava liberdade e modernidade.',
+      trends: ['Vestidos Retos', 'Cabelo Chanel', 'Pérolas Longas', 'Sapatos T-Bar'],
+      image: 'https://images.unsplash.com/photo-1594736797933-d0701ba02e93?w=400&h=300&fit=crop&crop=center'
+    },
+    {
+      id: '1950s',
+      number: '1950s',
+      title: 'New Look',
+      description: 'Christian Dior revoluciona a moda com o New Look, trazendo de volta a feminilidade com cinturas marcadas e saias amplas.',
+      trends: ['New Look', 'Cintura Marcada', 'Saias Godê', 'Pin-up Style'],
+      image: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=400&h=300&fit=crop&crop=center'
+    },
+    {
+      id: '1980s',
+      number: '1980s',
+      title: 'Power Dressing',
+      description: 'A década do excesso com ombros marcados, cores neon, e o power dressing que representava a ascensão feminina no mundo corporativo.',
+      trends: ['Power Suits', 'Cores Neon', 'Ombreiras', 'Leg Warmers'],
+      image: 'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=400&h=300&fit=crop&crop=center'
+    },
+    {
+      id: '2000s',
+      number: '2000s',
+      title: 'Era Digital',
+      description: 'O início do millennium trouxe experimentação extrema com baixa cintura, metalics, e a influência da cultura pop e da tecnologia.',
+      trends: ['Low Rise', 'Metallic', 'Cargo Pants', 'Chunky Highlights'],
+      image: 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=400&h=300&fit=crop&crop=center'
+    },
+    {
+      id: '2020s',
+      number: '2020s',
+      title: 'Sustentabilidade',
+      description: 'A moda consciente ganha força com foco na sustentabilidade, upcycling e a democratização através das redes sociais.',
+      trends: ['Sustainable', 'Cottagecore', 'Y2K Revival', 'Gender Neutral'],
+      image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=300&fit=crop&crop=center'
+    }
+  ];
 
   ngAfterViewInit(): void {
-    gsap.registerPlugin(ScrollTrigger);
-    this.createCarousels();
-    this.initAnimations();
+    this.initTimeline();
   }
 
-  private createCarousels() {
-    document.querySelectorAll<HTMLElement>('.decade-card').forEach(card => {
-      const decade = card.getAttribute('data-decade');
-      if (!decade || !this.decadeData[decade]) return;
+  ngOnDestroy(): void {
+    this.stopAutoPlay();
+    this.removeEventListeners();
+  }
 
-      const data = this.decadeData[decade];
-      const track = card.querySelector<HTMLElement>('.carousel-track')!;
-      const descriptionEl = card.querySelector<HTMLElement>('.decade-description')!;
-      const trendsEl = card.querySelector<HTMLElement>('.fashion-trends')!;
-      let currentIndex = 0;
-      let startX = 0;
+  private initTimeline(): void {
+    this.visibleItems = this.getVisibleItems();
+    this.createDots();
+    this.bindEvents();
+    this.updatePosition();
+    this.handleResize();
+    this.startAutoPlay();
+  }
 
-      // Preenche o carrossel
-      data.forEach((style: any) => {
-        const item = document.createElement('div');
-        item.classList.add('carousel-item');
-        const img = document.createElement('img');
-        img.src = style.image;
-        img.alt = 'Fashion style';
-        item.appendChild(img);
-        track.appendChild(item);
-      });
+  private getVisibleItems(): number {
+    const containerWidth = window.innerWidth - 80; // padding
+    return Math.floor(containerWidth / this.itemWidth);
+  }
 
-      const updateCarouselAndContent = () => {
-        const itemWidth = track.firstElementChild?.getBoundingClientRect().width || 0;
-        gsap.to(track, { x: -currentIndex * itemWidth, duration: 0.5, ease: 'power2.inOut' });
-
-        const currentStyle = data[currentIndex];
-        descriptionEl.textContent = currentStyle.description;
-        trendsEl.innerHTML = '';
-        currentStyle.trends.forEach((trend: string) => {
-          const badge = document.createElement('div');
-          badge.classList.add('trend-badge');
-          badge.textContent = trend;
-          trendsEl.appendChild(badge);
-        });
-      };
-
-      // Swipe - touch events
-      track.addEventListener('touchstart', (e: Event) => {
-        const touch = e as TouchEvent;
-        startX = touch.touches[0].clientX;
-      });
-
-      track.addEventListener('touchend', (e: Event) => {
-        const touch = e as TouchEvent;
-        const diffX = touch.changedTouches[0].clientX - startX;
-        if (Math.abs(diffX) > 50) {
-          currentIndex = diffX > 0
-            ? (currentIndex - 1 + data.length) % data.length
-            : (currentIndex + 1) % data.length;
-          updateCarouselAndContent();
-        }
-      });
-
-      // Autoplay
-      setInterval(() => {
-        currentIndex = (currentIndex + 1) % data.length;
-        updateCarouselAndContent();
-      }, 5000);
-
-      window.addEventListener('resize', updateCarouselAndContent);
-      updateCarouselAndContent();
+  private createDots(): void {
+    const dotsContainer = this.timelineDots.nativeElement;
+    dotsContainer.innerHTML = '';
+    
+    this.decadeData.forEach((_, index) => {
+      const dot = document.createElement('div');
+      dot.classList.add('dot');
+      if (index === 0) dot.classList.add('active');
+      dot.addEventListener('click', () => this.goToSlide(index));
+      dotsContainer.appendChild(dot);
     });
   }
 
-  private initAnimations() {
-    // Hero animations
-    gsap.timeline({ delay: 0.5 })
-      .to('.hero-title', { opacity: 1, y: 0, duration: 1.2, ease: 'power3.out' })
-      .to('.hero-subtitle', { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' }, '-=0.6');
+  private bindEvents(): void {
+    // Touch/Swipe support
+    let startX = 0;
+    let isDragging = false;
 
-    // Timeline items animation
-    document.querySelectorAll<HTMLElement>('.timeline-item').forEach(item => {
-      const card = item.querySelector<HTMLElement>('.decade-card')!;
-      const isLeft = item.classList.contains('left');
+    const track = this.timelineTrack.nativeElement;
 
-      gsap.set(item, { opacity: 0 });
-      gsap.set(card, { x: isLeft ? -100 : 100, opacity: 0 });
+    const touchStart = (e: TouchEvent) => {
+      startX = e.touches[0].clientX;
+      isDragging = true;
+    };
 
-      ScrollTrigger.create({
-        trigger: item,
-        start: 'top 80%',
-        end: 'bottom 20%',
-        onEnter: () => {
-          gsap.timeline()
-            .to(item, { opacity: 1, duration: 0.6 })
-            .to(card, { x: 0, opacity: 1, duration: 0.8, ease: 'power2.out' }, '-=0.3');
+    const touchMove = (e: TouchEvent) => {
+      if (!isDragging) return;
+      e.preventDefault();
+    };
+
+    const touchEnd = (e: TouchEvent) => {
+      if (!isDragging) return;
+      const endX = e.changedTouches[0].clientX;
+      const diffX = startX - endX;
+      
+      if (Math.abs(diffX) > 50) {
+        if (diffX > 0) {
+          this.nextSlide();
+        } else {
+          this.prevSlide();
         }
-      });
-    });
-
-    // Floating stars
-    document.querySelectorAll<HTMLElement>('.floating-star').forEach((el, i) => {
-      gsap.to(el, { rotation: 360, duration: 10 + i * 2, repeat: -1, ease: 'none' });
-      gsap.to(el, { y: 'random(-50,50)', x: 'random(-30,30)', duration: 4 + i, repeat: -1, yoyo: true, ease: 'power1.inOut' });
-    });
-
-    // Timeline dots hover effect
-    document.querySelectorAll<HTMLElement>('.timeline-dot').forEach(dot => {
-      dot.addEventListener('mouseenter', () => gsap.to(dot, { scale: 1.5, duration: 0.3, ease: 'back.out(1.7)' }));
-      dot.addEventListener('mouseleave', () => gsap.to(dot, { scale: 1, duration: 0.3, ease: 'power2.out' }));
-    });
-
-    // Card hover effects
-    document.querySelectorAll<HTMLElement>('.decade-card').forEach(card => {
-      card.addEventListener('mouseenter', () => gsap.to(card, { scale: 1.02, duration: 0.3, ease: 'power2.out' }));
-      card.addEventListener('mouseleave', () => gsap.to(card, { scale: 1, duration: 0.3, ease: 'power2.out' }));
-    });
-
-    // Timeline line progress
-    ScrollTrigger.create({
-      trigger: '.timeline-container',
-      start: 'top center',
-      end: 'bottom center',
-      onUpdate: self => {
-        gsap.to('.timeline-line', { scaleY: self.progress, transformOrigin: 'top center', duration: 0.3, ease: 'none' });
       }
+      isDragging = false;
+    };
+
+    // Keyboard navigation
+    const keyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowLeft') this.prevSlide();
+      if (e.key === 'ArrowRight') this.nextSlide();
+    };
+
+    track.addEventListener('touchstart', touchStart);
+    track.addEventListener('touchmove', touchMove);
+    track.addEventListener('touchend', touchEnd);
+    document.addEventListener('keydown', keyDown);
+
+    // Store references for cleanup
+    track.removeEventListeners = () => {
+      track.removeEventListener('touchstart', touchStart);
+      track.removeEventListener('touchmove', touchMove);
+      track.removeEventListener('touchend', touchEnd);
+      document.removeEventListener('keydown', keyDown);
+    };
+  }
+
+  private removeEventListeners(): void {
+    const track = this.timelineTrack.nativeElement;
+    if (track.removeEventListeners) {
+      track.removeEventListeners();
+    }
+  }
+
+  goToSlide(index: number): void {
+    this.currentIndex = Math.max(0, Math.min(index, this.decadeData.length - 1));
+    this.updatePosition();
+    this.stopAutoPlay(); // Stop autoplay on manual interaction
+  }
+
+  nextSlide(): void {
+    if (this.currentIndex < this.decadeData.length - 1) {
+      this.currentIndex++;
+      this.updatePosition();
+    } else {
+      // Loop back to first slide
+      this.currentIndex = 0;
+      this.updatePosition();
+    }
+  }
+
+  prevSlide(): void {
+    if (this.currentIndex > 0) {
+      this.currentIndex--;
+      this.updatePosition();
+    } else {
+      // Loop to last slide
+      this.currentIndex = this.decadeData.length - 1;
+      this.updatePosition();
+    }
+  }
+
+  private updatePosition(): void {
+    // Center the current item
+    const offset = -this.currentIndex * this.itemWidth + (window.innerWidth / 2) - (this.itemWidth / 2);
+    const track = this.timelineTrack.nativeElement;
+    track.style.transform = `translateX(${offset}px)`;
+
+    // Update active states
+    const items = document.querySelectorAll('.timeline-item');
+    items.forEach((item, index) => {
+      item.classList.toggle('active', index === this.currentIndex);
     });
+
+    // Update dots
+    const dots = this.timelineDots.nativeElement.querySelectorAll('.dot');
+    dots.forEach((dot: Element, index: number) => {
+      dot.classList.toggle('active', index === this.currentIndex);
+    });
+  }
+
+  private handleResize(): void {
+    window.addEventListener('resize', () => {
+      this.visibleItems = this.getVisibleItems();
+      this.updatePosition();
+    });
+  }
+
+  private startAutoPlay(): void {
+    this.autoPlayInterval = setInterval(() => {
+      this.nextSlide();
+    }, 5000);
+  }
+
+  private stopAutoPlay(): void {
+    if (this.autoPlayInterval) {
+      clearInterval(this.autoPlayInterval);
+      this.autoPlayInterval = null;
+    }
+  }
+
+  onMouseEnter(): void {
+    this.stopAutoPlay();
+  }
+
+  onMouseLeave(): void {
+    this.startAutoPlay();
+  }
+
+  get isPrevDisabled(): boolean {
+    return false; // Always enabled for looping
+  }
+
+  get isNextDisabled(): boolean {
+    return false; // Always enabled for looping
   }
 }

@@ -1,10 +1,10 @@
 <header class="header">
-  <div class="logo">Das Grune</div>
+  <img class="logo" routerLink="" routerLinkActive="active" (click)="isNavOpen=false" src="img/Brat.png">
   <nav class="nav" [class.active]="isNavOpen">
-    <a routerLink="/" routerLinkActive="active" (click)="isNavOpen=false">ABOUT</a>
-    <a routerLink="/timeline" routerLinkActive="active" (click)="isNavOpen=false">PROJECTS</a>
-    <a routerLink="/services" routerLinkActive="active" (click)="isNavOpen=false">SERVICES</a>
-    <a routerLink="/contact" routerLinkActive="active" (click)="isNavOpen=false">LET'S TALK</a>
+    <a routerLink="about" routerLinkActive="active" (click)="isNavOpen=false">ABOUT</a>
+    <a routerLink="timeline" routerLinkActive="active" (click)="isNavOpen=false">PROJECTS</a>
+    <a routerLink="services" routerLinkActive="active" (click)="isNavOpen=false">SERVICES</a>
+    <a routerLink="talk" routerLinkActive="active" (click)="isNavOpen=false">LET'S TALK</a>
   </nav>
   <div class="hamburger" (click)="toggleNav()">
     <span></span><span></span><span></span>

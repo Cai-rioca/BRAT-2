@@ -1,0 +1,34 @@
+<main>
+    <div class="titulo">CATÁLOGO<br>DE LOJAS</div>
+  
+    <div class="busca">
+      <input type="text" placeholder="Buscar por nome ou endereço..." 
+             [value]="searchTerm" (input)="onSearch($event)" />
+    </div>
+  
+    <div class="filtros">
+      <button *ngFor="let f of filtros"
+              [class.active]="filtroAtual === f.tipo"
+              (click)="setFiltro(f.tipo)">
+        {{ f.label }}
+      </button>
+    </div>
+  
+    <div class="lojas">
+      <div *ngIf="lojasFiltradas.length === 0" class="sem-resultados">
+        Aí, não achei nada com esse nome, meu chapa.
+      </div>
+  
+      <div *ngFor="let loja of lojasFiltradas" class="card">
+        <h3>{{ loja.nome }}</h3>
+        <p class="tipo">{{ loja.tipo }}</p>
+        <ng-container *ngIf="loja.link; else endereco">
+          <a class="link" [href]="loja.link" target="_blank" rel="noopener noreferrer">Visitar loja</a>
+        </ng-container>
+        <ng-template #endereco>
+          <p>Endereço: {{ loja.endereco }}</p>
+        </ng-template>
+      </div>
+    </div>
+  </main>
+  

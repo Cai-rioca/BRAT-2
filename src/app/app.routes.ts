@@ -1,8 +1,8 @@
 import { Routes } from '@angular/router';
 import { VinilComponent } from './vinil/vinil.component';
 import { LoginComponent } from './login/login.component';
-import { Component } from '@angular/core';
 import { TimelineComponent } from './timeline/timeline.component';
+import { ServicesComponent } from './services/services.component';
 
 export const routes: Routes = [
   {
@@ -10,12 +10,16 @@ export const routes: Routes = [
     component: VinilComponent,
   },
   {
-    path: "login",
+    path: 'login',
     component: LoginComponent
   },
   {
-    path: "timeline",
+    path: 'timeline',
     component: TimelineComponent
+  },
+  {
+    path: 'services',
+    component: ServicesComponent
   }
 ];
 

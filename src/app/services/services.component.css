@@ -1,0 +1,104 @@
+@import url('https://fonts.googleapis.com/css2?family=Anton:wght@400&display=swap');
+
+:root {
+  --primary: #c4f82a;
+  --dark: #111;
+  --card-bg: #222;
+  --light-text: #f0f0f0;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Anton', 'Arial Black', sans-serif;
+  background: var(--primary);
+  color: var(--dark);
+  overflow-x: hidden;
+}
+
+main { padding: 40px; min-height: 100vh; position: relative; }
+
+.titulo {
+  font-size: clamp(4rem, 12vw, 12rem);
+  font-weight: 900;
+  line-height: 0.9;
+  text-transform: uppercase;
+  max-width: 800px;
+  margin-bottom: 40px;
+  color: var(--dark);
+  letter-spacing: -0.05em;
+  position: relative;
+}
+
+.busca, .filtros { margin: 20px 0; }
+
+.busca input {
+  padding: 15px 20px;
+  width: 100%;
+  max-width: 500px;
+  border: 2px solid var(--dark);
+  background: transparent;
+  color: var(--dark);
+  font-weight: bold;
+  font-size: 1rem;
+  text-transform: uppercase;
+  font-family: 'Anton', sans-serif;
+  border-radius: 8px;
+}
+
+.busca input:focus { outline: none; background: rgba(0,0,0,0.1); }
+.busca input::placeholder { color: rgba(0,0,0,0.5); }
+
+.filtros button {
+  margin: 5px;
+  padding: 12px 25px;
+  background: var(--dark);
+  color: var(--primary);
+  border: 2px solid var(--dark);
+  font-weight: bold;
+  cursor: pointer;
+  text-transform: uppercase;
+  font-family: 'Anton', sans-serif;
+  transition: all 0.2s ease;
+  box-shadow: 4px 4px 0 rgba(0,0,0,0.4);
+  border-radius: 50px;
+}
+
+.filtros button:active, .filtros button.active {
+  transform: translate(2px,2px);
+  box-shadow: 2px 2px 0 rgba(0,0,0,0.4);
+  background: var(--primary);
+  color: #000;
+  border-color: #000;
+}
+
+.lojas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 25px;
+  margin-top: 40px;
+  margin-bottom: 100px;
+}
+
+.card {
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 8px 8px 0 rgba(0,0,0,0.2);
+  transition: all 0.3s ease;
+  background: var(--card-bg);
+  color: var(--light-text);
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 10px 10px 0 rgba(0,0,0,0.3);
+}
+
+.card h3, .card .link { color: var(--primary); }
+.card h3 { margin: 0 0 15px; font-size: 1.8rem; text-transform: uppercase; letter-spacing: 0.1em; }
+.tipo { font-size: 1.1rem; font-weight: bold; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 0.1em; }
+.card p { font-size: 1rem; letter-spacing: 0.05em; }
+
+.sem-resultados {
+  font-size: 1.5rem; text-align: center; grid-column: 1 / -1; color: var(--dark); padding: 40px;
+}
