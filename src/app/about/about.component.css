@@ -1,0 +1,156 @@
+body {
+    display: block;
+    font-family: 'Poppins', sans-serif;
+    background-color: #c4f82a;
+    color: #1A202C;
+    --accent-color: #121212;
+    min-height: 100vh;
+    box-sizing: border-box;
+    margin: 0;
+    /* Esconde a barra de rolagem */
+    -ms-overflow-style: none;  /* IE e Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+/* Esconde a barra de rolagem para navegadores Webkit (Chrome, Safari) */
+body::-webkit-scrollbar {
+    display: none;
+}
+
+.about-container {
+    max-width: 960px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 120px 24px 120px 24px;
+}
+
+.about-hero {
+    text-align: center;
+    margin-bottom: 80px;
+}
+
+.about-hero h1 {
+    font-family: 'Anton', sans-serif;
+    font-size: clamp(2.5rem, 8vw, 4.5rem);
+    text-transform: uppercase;
+    color: var(--accent-color);
+    line-height: 1.1;
+    margin: 0;
+}
+
+.about-hero .subtitle {
+    font-size: 1.125rem;
+    max-width: 600px;
+    margin: 24px auto 0;
+    color: #2D3748;
+}
+
+.about-section {
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+    align-items: center;
+    margin-bottom: 80px;
+}
+
+.about-section .text-content {
+    flex: 1;
+    max-width: 550px;
+}
+
+.about-section h2 {
+    font-family: 'Anton', sans-serif;
+    font-size: 2rem;
+    text-transform: uppercase;
+    margin-top: 0;
+    margin-bottom: 16px;
+}
+
+.about-section p {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: #2D3748;
+}
+
+.about-section .image-placeholder {
+    flex: 1;
+    width: 100%;
+    max-width: 400px;
+    min-height: 250px;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+    overflow: hidden; /* Garante que a imagem fique com as bordas arredondadas */
+}
+
+.about-section .image-placeholder img {
+     width: 100%;
+     height: 100%;
+     display: block; /* Remove o espaço extra embaixo da imagem */
+     object-fit: cover; /* Garante que a imagem cubra o espaço sem distorcer */
+}
+
+.about-legal {
+    text-align: center;
+    padding-top: 40px;
+    margin-top: 40px;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.about-legal h2 {
+    font-family: 'Anton', sans-serif;
+    font-size: 1.5rem;
+    text-transform: uppercase;
+    margin-top: 0;
+    margin-bottom: 24px;
+}
+
+.about-legal .legal-links {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+}
+
+.about-legal .legal-links a {
+    color: var(--accent-color);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+    position: relative;
+    padding-bottom: 4px;
+}
+
+.about-legal .legal-links a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: var(--accent-color);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.about-legal .legal-links a:hover::after {
+    transform: scaleX(1);
+}
+
+.accent-text {
+    color: #fff;
+    background-color: var(--accent-color);
+    padding: 0 12px;
+}
+
+@media (min-width: 768px) {
+    .about-container {
+        padding-top: 140px;
+    }
+    .about-section {
+        flex-direction: row;
+    }
+    .about-section.reverse {
+        flex-direction: row-reverse;
+    }
+}

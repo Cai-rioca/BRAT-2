@@ -2,14 +2,11 @@ import { Component, AfterViewInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { gsap } from 'gsap';
 
-
 declare var SC: any;
 
 @Component({
   selector: 'app-vinil',
-  imports: [
-    RouterModule
-  ],
+  imports: [RouterModule],
   templateUrl: './vinil.component.html',
   styleUrls: ['./vinil.component.css']
 })
@@ -23,7 +20,6 @@ export class VinilComponent implements AfterViewInit {
     gsap.to('.arrow-circle', { opacity: 1, duration: 1, delay: 1 });
 
     this.initializePlayer();
-    this.initBurger();
     this.initArrow();
   }
 
@@ -57,6 +53,13 @@ export class VinilComponent implements AfterViewInit {
           artist: "Forss",
           description: "Smooth electronic vibes that transport you to another dimension.",
           cover: "https://i1.sndcdn.com/artworks-000000000000-0-t500x500.jpg"
+        },
+        {
+          url: 'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/6368498459a54de591f8af20098edcad',
+          name: 'Como tá a mente da palhasona (eu)',
+          artist: 'LOFIHOUSEBOY',
+          description: 'Uma vibe introspectiva com batidas suaves.',
+          cover: 'https://i1.sndcdn.com/artworks-000000000000-0-t500x500.jpg'
         },
         {
           url: "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/1123049251",
@@ -130,6 +133,7 @@ export class VinilComponent implements AfterViewInit {
         widget.setVolume((e.target as HTMLInputElement).valueAsNumber / 100);
       });
 
+      // inicia vinil parado
       grooves.style.animationPlayState = 'paused';
       vinylImg.style.animationPlayState = 'paused';
     };
@@ -137,17 +141,8 @@ export class VinilComponent implements AfterViewInit {
     tryInit();
   }
 
-  initBurger(): void {
-    const hamburger = document.querySelector('.hamburger');
-    const nav = document.querySelector('.nav');
-    if (!hamburger || !nav) return;
-
-    hamburger.addEventListener('click', () => {
-      nav.classList.toggle('active');
-    });
-  }
-
-  initArrow(): void {
+  initArrow(): 
+  void {
     const arrowCircle = document.querySelector('.arrow-circle');
     if (!arrowCircle) return;
 

@@ -1,13 +1,6 @@
 
 <!-- Timeline Section -->
 <section class="timeline-container" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">
-  <!-- Decorative Squiggles -->
-  <svg class="squiggle squiggle-1" viewBox="0 0 150 50">
-    <path d="M10,25 Q40,5 70,25 T130,25" />
-  </svg>
-  <svg class="squiggle squiggle-2" viewBox="0 0 120 40">
-    <path d="M10,20 Q30,5 50,20 T90,20 Q100,15 110,20" />
-  </svg>
 
   <div class="timeline-wrapper">
     <div class="timeline-track" #timelineTrack>
@@ -44,23 +37,9 @@
 
     <!-- Navigation -->
     <div class="timeline-nav">
-      <button 
-        class="nav-btn" 
-        (click)="prevSlide()"
-        [disabled]="isPrevDisabled">
-        ‹
-      </button>
-      
-      <div class="timeline-dots" #timelineDots>
-        <!-- Dots will be created dynamically -->
-      </div>
-      
-      <button 
-        class="nav-btn" 
-        (click)="nextSlide()"
-        [disabled]="isNextDisabled">
-        ›
-      </button>
+      <button class="nav-btn prev" (click)="prevSlide()" [disabled]="isPrevDisabled">‹</button>
+      <div class="timeline-dots" #timelineDots></div>
+      <button class="nav-btn next" (click)="nextSlide()" [disabled]="isNextDisabled">›</button>
     </div>
   </div>
 </section>

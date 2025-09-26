@@ -10,27 +10,31 @@
   background: #2c2c2c;
   color: #000;
   overflow-x: hidden;
-  margin-top: 2%;
+
 }
 
 /* Timeline Container */
 .timeline-container {
-  padding: 80px 0;
+  padding: 40px 0; 
   background: #c4f82a;
   position: relative;
   overflow: hidden;
+
+  min-height: calc(100vh - 70px); /* 70px = altura do header aprox */
+  box-sizing: border-box;
 }
 
 .timeline-wrapper {
   position: relative;
   max-width: 100%;
-  margin: 0 auto;
+  margin-top: 20px;
   padding: 0 40px;
 }
 
 /* Timeline Track */
 .timeline-track {
   display: flex;
+
   transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   gap: 40px;
   padding: 40px 0;
@@ -168,32 +172,28 @@
 
 
 
+
 .nav-btn {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  background: #000;
-  border: 3px solid #000;
-  color: #c4f82a;
-  font-size: 20px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s ease;
+  background: none;     
+  border: none;         
+  color: #000;          
+  font-size: 2rem;      
   font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s 
+  ease;
 }
 
 .nav-btn:hover:not(:disabled) {
-  background: #c4f82a;
-  color: #000;
-  transform: scale(1.1);
+  color: #c4f82a;        
+  transform: scale(1.2); 
 }
 
 .nav-btn:disabled {
-  opacity: 0.5;
+  opacity: 0.3;
   cursor: not-allowed;
 }
+
 
 /* Dots Indicator */
 .timeline-dots {
@@ -220,30 +220,6 @@
   transform: scale(1.2);
 }
 
-/* Squiggly Lines */
-.squiggle {
-  position: absolute;
-  stroke: #000;
-  stroke-width: 3;
-  fill: none;
-  opacity: 0.6;
-}
-
-.squiggle-1 {
-  top: 20px;
-  left: 10%;
-  width: 150px;
-  height: 50px;
-  animation: float 6s ease-in-out infinite;
-}
-
-.squiggle-2 {
-  bottom: 20px;
-  right: 10%;
-  width: 120px;
-  height: 40px;
-  animation: float 6s ease-in-out infinite reverse;
-}
 
 /* Mobile Responsivity */
 @media (max-width: 768px) {

@@ -1,104 +1,141 @@
-@import url('https://fonts.googleapis.com/css2?family=Anton:wght@400&display=swap');
-
-:root {
-  --primary: #c4f82a;
-  --dark: #111;
-  --card-bg: #222;
-  --light-text: #f0f0f0;
+/* Bloqueia scroll da página inteira */
+:host, body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden; /* página não rola */
 }
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
-
-body {
-  font-family: 'Anton', 'Arial Black', sans-serif;
-  background: var(--primary);
-  color: var(--dark);
-  overflow-x: hidden;
+/* Container principal respeitando header/footer */
+.services-container {
+  display: flex;
+  gap: 50px; /* espaçamento maior entre left e right panel */
+  padding: 160px 50px 80px; /* espaço topo pro header */
+  box-sizing: border-box;
+  min-height: calc(100vh - 200px); /* altura total menos header/footer */
 }
 
-main { padding: 40px; min-height: 100vh; position: relative; }
-
-.titulo {
-  font-size: clamp(4rem, 12vw, 12rem);
-  font-weight: 900;
-  line-height: 0.9;
-  text-transform: uppercase;
-  max-width: 800px;
-  margin-bottom: 40px;
-  color: var(--dark);
-  letter-spacing: -0.05em;
-  position: relative;
+/* Lado esquerdo */
+.left-panel {
+  flex: 0 0 35%;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  justify-content: flex-start;
 }
 
-.busca, .filtros { margin: 20px 0; }
-
-.busca input {
-  padding: 15px 20px;
-  width: 100%;
-  max-width: 500px;
-  border: 2px solid var(--dark);
-  background: transparent;
-  color: var(--dark);
-  font-weight: bold;
-  font-size: 1rem;
-  text-transform: uppercase;
+/* Título estilo home */
+.left-panel .titulo {
   font-family: 'Anton', sans-serif;
-  border-radius: 8px;
+  font-size: clamp(3rem, 5vw, 4rem);
+  line-height: 1;
+  text-transform: uppercase;
+  color: #000;
+  margin-bottom: 20px;
 }
 
-.busca input:focus { outline: none; background: rgba(0,0,0,0.1); }
-.busca input::placeholder { color: rgba(0,0,0,0.5); }
+/* Barra de busca */
+.left-panel .busca input {
+  padding: 12px 16px;
+  border: 2px solid #000;
+  border-radius: 30px; /* igual aos badges antigos */
+  font-size: 1rem;
+  font-family: 'Anton', sans-serif;
+  outline: none;
+  width: 100%;
+  background: transparent;
+  color: #000;
+  transition: background 0.3s;
+}
+.left-panel .busca input:focus {
+  background: rgba(0,0,0,0.05);
+}
 
-.filtros button {
-  margin: 5px;
+/* Botões de filtro estilo antigo */
+.left-panel .filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-start;
+}
+
+.left-panel .filtros button {
   padding: 12px 25px;
-  background: var(--dark);
-  color: var(--primary);
-  border: 2px solid var(--dark);
+  background: #111;
+  color: #c4f82a;
   font-weight: bold;
+  border: 2px solid #111;
   cursor: pointer;
   text-transform: uppercase;
   font-family: 'Anton', sans-serif;
   transition: all 0.2s ease;
   box-shadow: 4px 4px 0 rgba(0,0,0,0.4);
-  border-radius: 50px;
+  border-radius: 8px;
 }
-
-.filtros button:active, .filtros button.active {
+.left-panel .filtros button:active,
+.left-panel .filtros button.active {
   transform: translate(2px,2px);
   box-shadow: 2px 2px 0 rgba(0,0,0,0.4);
-  background: var(--primary);
+  background: #c4f82a;
   color: #000;
   border-color: #000;
 }
 
-.lojas {
+/* Lado direito: cards */
+.right-panel {
+  flex: 1;
+  max-height: calc(100vh - 200px); /* altura máxima dentro do container */
+  overflow-y: auto; /* scroll só aqui */
+  padding-left: 10px;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 25px;
-  margin-top: 40px;
-  margin-bottom: 100px;
 }
 
+/* Scroll personalizado */
+.right-panel::-webkit-scrollbar {
+  width: 8px;
+}
+.right-panel::-webkit-scrollbar-track {
+  background: #000;
+}
+.right-panel::-webkit-scrollbar-thumb {
+  background-color: #c4f82a;
+  border-radius: 4px;
+}
+
+/* Cards */
 .card {
-  padding: 25px;
+  background: #222;
+  color: #f0f0f0;
+  padding: 20px;
   border-radius: 12px;
-  box-shadow: 8px 8px 0 rgba(0,0,0,0.2);
-  transition: all 0.3s ease;
-  background: var(--card-bg);
-  color: var(--light-text);
+  box-shadow: 4px 4px 0 rgba(0,0,0,0.3);
+  transition: transform 0.2s;
 }
-
 .card:hover {
-  transform: translateY(-5px);
-  box-shadow: 10px 10px 0 rgba(0,0,0,0.3);
+  transform: translateY(-4px);
 }
 
-.card h3, .card .link { color: var(--primary); }
-.card h3 { margin: 0 0 15px; font-size: 1.8rem; text-transform: uppercase; letter-spacing: 0.1em; }
-.tipo { font-size: 1.1rem; font-weight: bold; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 0.1em; }
-.card p { font-size: 1rem; letter-spacing: 0.05em; }
+/* Tipos e links */
+.card h3, .card .link { color: #c4f82a; }
+.card .tipo { font-size: 0.9rem; text-transform: uppercase; margin: 8px 0; }
+.card .link { text-decoration: underline; }
 
+/* Sem resultados */
 .sem-resultados {
-  font-size: 1.5rem; text-align: center; grid-column: 1 / -1; color: var(--dark); padding: 40px;
+  font-size: 1.2rem;
+  text-align: center;
+  grid-column: 1 / -1;
+  color: #000;
+}
+
+/* RESPONSIVIDADE */
+@media (max-width: 1024px) {
+  .services-container {
+    flex-direction: column;
+    padding: 140px 20px 80px;
+  }
+  .left-panel { flex: 1; }
+  .right-panel { max-height: 60vh; padding-left: 0; }
 }

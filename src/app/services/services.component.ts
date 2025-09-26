@@ -1,23 +1,34 @@
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+
+interface Loja {
+  nome: string;
+  tipo: string;
+  endereco?: string;
+  link?: string;
+}
 
 @Component({
-  selector: 'app-services',
-  templateUrl: './services.component.html',
-  styleUrls: ['./services.component.css']
+  selector: 'app-catalogo-lojas',
+  templateUrl: 'services.component.html',
+  imports: [CommonModule, FormsModule],
+  styleUrls: ['services.component.css']
 })
 export class ServicesComponent {
+
   searchTerm: string = '';
   filtroAtual: string = 'todos';
 
-  filtros = [
-    { tipo: 'todos', label: 'Todos' },
-    { tipo: 'brecho', label: 'Brechós' },
-    { tipo: 'bazaar', label: 'Bazares' },
-    { tipo: 'completa', label: 'Completas' },
-    { tipo: 'online', label: 'Online' },
+  tipos = [
+    { label: 'Todos', value: 'todos' },
+    { label: 'Brechós', value: 'brecho' },
+    { label: 'Bazares', value: 'bazar' },
+    { label: 'Completas', value: 'completa' },
+    { label: 'Online', value: 'online' },
   ];
 
-  lojas = [
+  lojas: Loja[] = [
     { nome: "Estilo Retrô", tipo: "brecho", endereco: "Rua Tal, 123" },
     { nome: "Bazar Popular", tipo: "bazaar", endereco: "Av. Principal, 456" },
     { nome: "Fashion Plus", tipo: "completa", endereco: "Rua X, 789" },
@@ -31,25 +42,26 @@ export class ServicesComponent {
     { nome: "Neo Bazaar", tipo: "bazaar", endereco: "Rua Futura, 404" }
   ];
 
-  // Método correto que será chamado no input
-  onSearch(event: Event) {
-    const target = event.target as HTMLInputElement;
-    this.searchTerm = target.value.toLowerCase();
-  }
+  get lojasFiltradas(): Loja[] {
+    let filtradas = this.lojas;
 
-  // Getter que filtra as lojas baseado no filtro atual e no searchTerm
-  get lojasFiltradas() {
-    return this.lojas
-      .filter(loja => this.filtroAtual === 'todos' || loja.tipo === this.filtroAtual)
-      .filter(loja => {
-        const termo = this.searchTerm;
-        return loja.nome.toLowerCase().includes(termo) ||
-               (loja.endereco && loja.endereco.toLowerCase().includes(termo));
-      });
+    if (this.filtroAtual !== 'todos') {
+      filtradas = filtradas.filter(l => l.tipo === this.filtroAtual);
+    }
+
+    if (this.searchTerm.trim() !== '') {
+      const termo = this.searchTerm.trim().toLowerCase();
+      filtradas = filtradas.filter(l =>
+        (l.nome?.toLowerCase().includes(termo)) ||
+        (l.endereco?.toLowerCase().includes(termo))
+      );
+    }
+
+    return filtradas;
   }
 
   setFiltro(tipo: string) {
     this.filtroAtual = tipo;
-    this.searchTerm = ''; // limpa a busca ao mudar filtro
+    this.searchTerm = '';
   }
 }
