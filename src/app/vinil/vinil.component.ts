@@ -1,6 +1,7 @@
 import { Component, AfterViewInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { gsap } from 'gsap';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 declare var SC: any;
 
@@ -11,6 +12,46 @@ declare var SC: any;
   styleUrls: ['./vinil.component.css']
 })
 export class VinilComponent implements AfterViewInit {
+  safeTracks: SafeResourceUrl[] = [];
+  tracks = [
+    {
+      url: "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/293",
+      name: "Mellow Sunrise",
+      artist: "Forss",
+      description: "Smooth electronic vibes that transport you to another dimension.",
+      cover: "https://i1.sndcdn.com/artworks-000000000000-0-t500x500.jpg"
+    },
+    {
+      url: 'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/6368498459a54de591f8af20098edcad',
+      name: 'Como tá a mente da palhasona (eu)',
+      artist: 'LOFIHOUSEBOY',
+      description: 'Uma vibe introspectiva com batidas suaves.',
+      cover: 'https://i1.sndcdn.com/artworks-000000000000-0-t500x500.jpg'
+    },
+    {
+      url: "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/1123049251",
+      name: "YaSuKe 弥助",
+      artist: "Sim Production",
+      description: "Futuristic soundscape blending traditional and modern elements.",
+      cover: "https://i1.sndcdn.com/artworks-WQGncTCPSeYOVdtC-Ucf2zg-t500x500.jpg"
+    },
+    {
+      url: "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/1967183415",
+      name: "Swamp Festival",
+      artist: "DJ Gator AIDS",
+      description: "Underground electronic beats with experimental sound design.",
+      cover: "https://i1.sndcdn.com/artworks-WcVRnt3QHm0mzgp3-8O03yw-t500x500.jpg"
+    }
+  ];
+
+  trackIndex = 0;
+  widget: any;
+  isPlaying = false;
+
+  constructor(private sanitizer: DomSanitizer) {
+    // transforma URLs das tracks em SafeResourceUrl
+    this.safeTracks = this.tracks.map(t => this.sanitizer.bypassSecurityTrustResourceUrl(t.url));
+  }
 
   ngAfterViewInit(): void {
     // Animações iniciais
@@ -26,12 +67,12 @@ export class VinilComponent implements AfterViewInit {
   initializePlayer(): void {
     const tryInit = () => {
       if (typeof SC === 'undefined') {
-        console.log('SoundCloud SDK not loaded, retrying...');
+        console.log('⚠️ SoundCloud SDK não carregado ainda, tentando de novo...');
         setTimeout(tryInit, 500);
         return;
       }
 
-      const widget = SC.Widget(document.getElementById('sc-player'));
+      this.widget = SC.Widget(document.getElementById('sc-player'));
       const playBtn = document.getElementById('play')!;
       const icon = document.getElementById('playIcon')!;
       const prevBtn = document.getElementById('prev')!;
@@ -44,42 +85,9 @@ export class VinilComponent implements AfterViewInit {
       const vinylImg = document.querySelector('.vinyl-center img') as HTMLElement;
       const volumeSlider = document.getElementById('volumeSlider') as HTMLInputElement;
 
-      let isPlaying = false, trackIndex = 0;
-
-      const tracks = [
-        {
-          url: "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/293",
-          name: "Mellow Sunrise",
-          artist: "Forss",
-          description: "Smooth electronic vibes that transport you to another dimension.",
-          cover: "https://i1.sndcdn.com/artworks-000000000000-0-t500x500.jpg"
-        },
-        {
-          url: 'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/6368498459a54de591f8af20098edcad',
-          name: 'Como tá a mente da palhasona (eu)',
-          artist: 'LOFIHOUSEBOY',
-          description: 'Uma vibe introspectiva com batidas suaves.',
-          cover: 'https://i1.sndcdn.com/artworks-000000000000-0-t500x500.jpg'
-        },
-        {
-          url: "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/1123049251",
-          name: "YaSuKe 弥助",
-          artist: "Sim Production",
-          description: "Futuristic soundscape blending traditional and modern elements.",
-          cover: "https://i1.sndcdn.com/artworks-WQGncTCPSeYOVdtC-Ucf2zg-t500x500.jpg"
-        },
-        {
-          url: "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/1967183415",
-          name: "Swamp Festival",
-          artist: "DJ Gator AIDS",
-          description: "Underground electronic beats with experimental sound design.",
-          cover: "https://i1.sndcdn.com/artworks-WcVRnt3QHm0mzgp3-8O03yw-t500x500.jpg"
-        }
-      ];
-
       const loadTrack = (i: number, auto = false) => {
-        const t = tracks[i];
-        widget.load(t.url, { auto_play: auto, show_artwork: false });
+        const t = this.tracks[i];
+        this.widget.load(t.url, { auto_play: auto, show_artwork: false });
         trackName.textContent = t.name;
         artistName.textContent = t.artist;
         trackDesc.textContent = t.description;
@@ -91,46 +99,57 @@ export class VinilComponent implements AfterViewInit {
         );
       };
 
-      widget.bind(SC.Widget.Events.READY, () => {
-        loadTrack(trackIndex);
-        widget.setVolume(Number(volumeSlider.value) / 100);
+      this.widget.bind(SC.Widget.Events.READY, () => {
+        loadTrack(this.trackIndex);
+        this.widget.setVolume(0.5);
       });
+      
 
+      // play/pause
       playBtn.addEventListener('click', () => {
-        if (isPlaying) widget.pause(); else widget.play();
+        if (this.isPlaying) {
+          this.widget.pause();
+        } else {
+          this.widget.setVolume(volumeSlider ? Number(volumeSlider.value)/100 : 0.5);
+          this.widget.play();
+        }
       });
 
+      // prev
       prevBtn.addEventListener('click', () => {
-        trackIndex = (trackIndex - 1 + tracks.length) % tracks.length;
-        loadTrack(trackIndex, true);
+        this.trackIndex = (this.trackIndex - 1 + this.tracks.length) % this.tracks.length;
+        loadTrack(this.trackIndex, true);
       });
 
+      // next
       nextBtn.addEventListener('click', () => {
-        trackIndex = (trackIndex + 1) % tracks.length;
-        loadTrack(trackIndex, true);
+        this.trackIndex = (this.trackIndex + 1) % this.tracks.length;
+        loadTrack(this.trackIndex, true);
       });
 
-      widget.bind(SC.Widget.Events.PLAY, () => {
-        isPlaying = true;
+      // eventos do widget
+      this.widget.bind(SC.Widget.Events.PLAY, () => {
+        this.isPlaying = true;
         icon.classList.replace('fa-play', 'fa-pause');
         grooves.style.animationPlayState = 'running';
         vinylImg.style.animationPlayState = 'running';
       });
 
-      widget.bind(SC.Widget.Events.PAUSE, () => {
-        isPlaying = false;
+      this.widget.bind(SC.Widget.Events.PAUSE, () => {
+        this.isPlaying = false;
         icon.classList.replace('fa-pause', 'fa-play');
         grooves.style.animationPlayState = 'paused';
         vinylImg.style.animationPlayState = 'paused';
       });
 
-      widget.bind(SC.Widget.Events.FINISH, () => {
-        trackIndex = (trackIndex + 1) % tracks.length;
-        loadTrack(trackIndex, true);
+      this.widget.bind(SC.Widget.Events.FINISH, () => {
+        this.trackIndex = (this.trackIndex + 1) % this.tracks.length;
+        loadTrack(this.trackIndex, true);
       });
 
+      // volume
       volumeSlider.addEventListener('input', e => {
-        widget.setVolume((e.target as HTMLInputElement).valueAsNumber / 100);
+        this.widget.setVolume((e.target as HTMLInputElement).valueAsNumber / 100);
       });
 
       // inicia vinil parado
@@ -141,8 +160,7 @@ export class VinilComponent implements AfterViewInit {
     tryInit();
   }
 
-  initArrow(): 
-  void {
+  initArrow(): void {
     const arrowCircle = document.querySelector('.arrow-circle');
     if (!arrowCircle) return;
 
