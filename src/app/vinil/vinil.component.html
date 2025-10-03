@@ -3,55 +3,52 @@
     <h1 class="main-title">DIGITIZE<br>IDEAS</h1>
     <div class="badges">
       <div class="badge"><a routerLink="login">login</a></div>
-      <div class="badge">World Class Agency</div>
+      <div class="badge"><a routerLink="">music</a></div>
     </div>
   </section>
 
   <section class="right-side">
-    <!-- Vinil -->
     <div class="vinyl-container">
-      <div class="vinyl-grooves"></div>
+      <div class="vinyl-grooves" [class.playing]="isPlaying"></div>
       <div class="vinyl-center">
-        <img id="trackImage"
-          src="https://i1.sndcdn.com/artworks-000000000000-0-t500x500.jpg"
-          alt="Track Cover">
+        <img [src]="currentTrack.cover" alt="Track Cover" [class.playing]="isPlaying">
       </div>
       <div class="vinyl-hole"></div>
     </div>
 
-    <!-- Controles -->
     <div class="music-controls">
-      <button id="prev" title="Previous"><i class="fas fa-backward"></i></button>
-      <button id="play" title="Play/Pause"><i class="fas fa-play" id="playIcon"></i></button>
-      <button id="next" title="Next"><i class="fas fa-forward"></i></button>
+      <button (click)="prevTrack()" title="Previous"><i class="fas fa-backward"></i></button>
+      <button (click)="togglePlayPause()" title="Play/Pause">
+        <i class="fas" [class.fa-play]="!isPlaying" [class.fa-pause]="isPlaying"></i>
+      </button>
+      <button (click)="nextTrack()" title="Next"><i class="fas fa-forward"></i></button>
       <div class="volume-control">
         <i class="fas fa-volume-down"></i>
-        <input type="range" id="volumeSlider" class="volume-slider" min="0" max="100" value="80">
+        <input type="range" class="volume-slider" min="0" max="100" [value]="currentVolume" (input)="onVolumeChange($event)">
         <i class="fas fa-volume-up"></i>
       </div>
     </div>
 
-    <!-- Info -->
+    
     <div class="music-info">
-      <div class="track-name" id="trackName">Mellow Sunrise</div>
-      <div class="artist-name" id="artistName">Forss</div>
-      <div class="description" id="trackDescription">
-        Smooth electronic vibes that transport you to another dimension.
-      </div>
+      <div class="track-name">{{ currentTrack.name }}</div>
+      <div class="artist-name">{{ currentTrack.artist }}</div>
+      <div class="description">{{ currentTrack.description }}</div>
     </div>
 
-    <!-- Arrow circle -->
+
     <a href="https://aesthetics.fandom.com/wiki/Aesthetics_Wiki" target="_blank" class="arrow-circle"></a>
 
-    <!-- Player SoundCloud invisível -->
-    <iframe id="sc-player"
+    <iframe #vinilPlayer
+      id="sc-player"
       width="0"
       height="0"
       frameborder="no"
-      [src]="safeTracks[trackIndex]"
+
       allow="autoplay"
       style="display:none;"
-      src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/293&auto_play=false">
+      [src]="safeUrlForInitialTrack">
     </iframe>
+
   </section>
 </main>
