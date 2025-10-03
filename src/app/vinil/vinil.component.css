@@ -315,5 +315,18 @@
     .volume-slider {
       width: 100px;
     }
+
+    /* Adicione estas regras para controlar a animação com a classe .playing */
+.vinyl-grooves,
+.vinyl-center img {
+  /* A animação agora começa pausada por padrão */
+  animation-play-state: paused;
+}
+
+.vinyl-grooves.playing,
+.vinyl-center img.playing {
+  /* A animação roda quando o elemento tem a classe .playing */
+  animation-play-state: running;
+}
   }
   
