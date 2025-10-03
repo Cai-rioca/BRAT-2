@@ -1,61 +1,46 @@
-import { Component, AfterViewInit } from '@angular/core';
+import { Component, AfterViewInit, ViewChild, ElementRef, NgZone } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { gsap } from 'gsap';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
+// Declara a variável global do SoundCloud para o TypeScript não reclamar
 declare var SC: any;
 
 @Component({
   selector: 'app-vinil',
+  // standalone: true, // Se for um componente standalone, mantenha esta linha
   imports: [RouterModule],
   templateUrl: './vinil.component.html',
   styleUrls: ['./vinil.component.css']
 })
 export class VinilComponent implements AfterViewInit {
-  safeTracks: SafeResourceUrl[] = [];
+  // @ViewChild pega a referência do <iframe> do template (#vinilPlayer)
+  @ViewChild('vinilPlayer') vinilPlayerFrame!: ElementRef;
+
+  // Lista de músicas com URLs da API, não do player
   tracks = [
-    {
-      url: "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/293",
-      name: "Mellow Sunrise",
-      artist: "Forss",
-      description: "Smooth electronic vibes that transport you to another dimension.",
-      cover: "https://i1.sndcdn.com/artworks-000000000000-0-t500x500.jpg"
-    },
-    {
-      url: 'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/6368498459a54de591f8af20098edcad',
-      name: 'Como tá a mente da palhasona (eu)',
-      artist: 'LOFIHOUSEBOY',
-      description: 'Uma vibe introspectiva com batidas suaves.',
-      cover: 'https://i1.sndcdn.com/artworks-000000000000-0-t500x500.jpg'
-    },
-    {
-      url: "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/1123049251",
-      name: "YaSuKe 弥助",
-      artist: "Sim Production",
-      description: "Futuristic soundscape blending traditional and modern elements.",
-      cover: "https://i1.sndcdn.com/artworks-WQGncTCPSeYOVdtC-Ucf2zg-t500x500.jpg"
-    },
-    {
-      url: "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/1967183415",
-      name: "Swamp Festival",
-      artist: "DJ Gator AIDS",
-      description: "Underground electronic beats with experimental sound design.",
-      cover: "https://i1.sndcdn.com/artworks-WcVRnt3QHm0mzgp3-8O03yw-t500x500.jpg"
-    }
+    { url: "https://api.soundcloud.com/tracks/293", name: "Mellow Sunrise", artist: "Forss", description: "Smooth electronic vibes.", cover: "https://i1.sndcdn.com/artworks-000000000000-0-t500x500.jpg" },
+    { url: 'https://api.soundcloud.com/tracks/63684984', name: 'Como tá a mente da palhasona', artist: 'LOFIHOUSEBOY', description: 'Uma vibe introspectiva com batidas suaves.', cover: 'https://i1.sndcdn.com/artworks-zLy3tY21u0c3-0-t500x500.jpg' },
+    { url: "https://api.soundcloud.com/tracks/1123049251", name: "YaSuKe 弥助", artist: "Sim Production", description: "Futuristic soundscape blending traditional and modern.", cover: "https://i1.sndcdn.com/artworks-WQGncTCPSeYOVdtC-Ucf2zg-t500x500.jpg" },
+    { url: "https://api.soundcloud.com/tracks/1967183415", name: "Swamp Festival", artist: "DJ Gator AIDS", description: "Underground electronic beats with experimental sound.", cover: "https://i1.sndcdn.com/artworks-WcVRnt3QHm0mzgp3-8O03yw-t500x500.jpg" }
   ];
 
+  // Propriedades para controlar o estado do player
   trackIndex = 0;
   widget: any;
   isPlaying = false;
+  currentVolume = 100;
+  currentTrack = this.tracks[this.trackIndex]; // Guarda a música atual
+  safeUrlForInitialTrack: SafeResourceUrl; // URL segura para a primeira música
 
-  constructor(private sanitizer: DomSanitizer) {
-    // transforma URLs das tracks em SafeResourceUrl
-    this.safeTracks = this.tracks.map(t => this.sanitizer.bypassSecurityTrustResourceUrl(t.url));
+  constructor(private sanitizer: DomSanitizer, private zone: NgZone) {
+    // Cria uma URL segura apenas para a primeira música carregar no iframe
+    const initialUrl = `https://w.soundcloud.com/player/?url=${this.tracks[0].url}`;
+    this.safeUrlForInitialTrack = this.sanitizer.bypassSecurityTrustResourceUrl(initialUrl);
   }
 
   ngAfterViewInit(): void {
-    // Animações iniciais
-    gsap.to('.header', { opacity: 1, duration: 1 });
+    // Animações GSAP (continuam iguais)
     gsap.to('.main-title', { opacity: 1, y: 0, duration: 1, delay: 0.3 });
     gsap.to('.vinyl-container', { opacity: 1, x: 0, duration: 1, delay: 0.6 });
     gsap.to('.arrow-circle', { opacity: 1, duration: 1, delay: 1 });
@@ -65,113 +50,84 @@ export class VinilComponent implements AfterViewInit {
   }
 
   initializePlayer(): void {
-    const tryInit = () => {
-      if (typeof SC === 'undefined') {
-        console.log('⚠️ SoundCloud SDK não carregado ainda, tentando de novo...');
-        setTimeout(tryInit, 500);
-        return;
-      }
+    // Espera o SC e o elemento do iframe estarem prontos
+    if (typeof SC === 'undefined' || !this.vinilPlayerFrame?.nativeElement) {
+      setTimeout(() => this.initializePlayer(), 100);
+      return;
+    }
 
-      this.widget = SC.Widget(document.getElementById('sc-player'));
-      const playBtn = document.getElementById('play')!;
-      const icon = document.getElementById('playIcon')!;
-      const prevBtn = document.getElementById('prev')!;
-      const nextBtn = document.getElementById('next')!;
-      const trackImage = document.getElementById('trackImage') as HTMLImageElement;
-      const trackName = document.getElementById('trackName')!;
-      const artistName = document.getElementById('artistName')!;
-      const trackDesc = document.getElementById('trackDescription')!;
-      const grooves = document.querySelector('.vinyl-grooves') as HTMLElement;
-      const vinylImg = document.querySelector('.vinyl-center img') as HTMLElement;
-      const volumeSlider = document.getElementById('volumeSlider') as HTMLInputElement;
-
-      const loadTrack = (i: number, auto = false) => {
-        const t = this.tracks[i];
-        this.widget.load(t.url, { auto_play: auto, show_artwork: false });
-        trackName.textContent = t.name;
-        artistName.textContent = t.artist;
-        trackDesc.textContent = t.description;
-        trackImage.src = t.cover;
-
-        gsap.fromTo([trackName, artistName, trackDesc, trackImage],
-          { opacity: 0, y: 10 },
-          { opacity: 1, y: 0, duration: 0.4, stagger: 0.1 }
-        );
-      };
-
-      this.widget.bind(SC.Widget.Events.READY, () => {
-        loadTrack(this.trackIndex);
-        this.widget.setVolume(0.5);
-      });
-      
-
-      // play/pause
-      playBtn.addEventListener('click', () => {
-        if (this.isPlaying) {
-          this.widget.pause();
-        } else {
-          this.widget.setVolume(volumeSlider ? Number(volumeSlider.value)/100 : 0.5);
-          this.widget.play();
-        }
-      });
-
-      // prev
-      prevBtn.addEventListener('click', () => {
-        this.trackIndex = (this.trackIndex - 1 + this.tracks.length) % this.tracks.length;
-        loadTrack(this.trackIndex, true);
-      });
-
-      // next
-      nextBtn.addEventListener('click', () => {
-        this.trackIndex = (this.trackIndex + 1) % this.tracks.length;
-        loadTrack(this.trackIndex, true);
-      });
-
-      // eventos do widget
-      this.widget.bind(SC.Widget.Events.PLAY, () => {
-        this.isPlaying = true;
-        icon.classList.replace('fa-play', 'fa-pause');
-        grooves.style.animationPlayState = 'running';
-        vinylImg.style.animationPlayState = 'running';
-      });
-
-      this.widget.bind(SC.Widget.Events.PAUSE, () => {
-        this.isPlaying = false;
-        icon.classList.replace('fa-pause', 'fa-play');
-        grooves.style.animationPlayState = 'paused';
-        vinylImg.style.animationPlayState = 'paused';
-      });
-
-      this.widget.bind(SC.Widget.Events.FINISH, () => {
-        this.trackIndex = (this.trackIndex + 1) % this.tracks.length;
-        loadTrack(this.trackIndex, true);
-      });
-
-      // volume
-      volumeSlider.addEventListener('input', e => {
-        this.widget.setVolume((e.target as HTMLInputElement).valueAsNumber / 100);
-      });
-
-      // inicia vinil parado
-      grooves.style.animationPlayState = 'paused';
-      vinylImg.style.animationPlayState = 'paused';
-    };
-
-    tryInit();
+    this.widget = SC.Widget(this.vinilPlayerFrame.nativeElement);
+    this.bindWidgetEvents();
   }
 
+  bindWidgetEvents(): void {
+    this.widget.bind(SC.Widget.Events.READY, () => {
+      console.log('Player pronto!');
+      this.widget.setVolume(this.currentVolume / 100);
+    });
+
+    // Usamos NgZone para garantir que o Angular atualize a tela quando um evento do SC acontecer
+    this.widget.bind(SC.Widget.Events.PLAY, () => {
+      this.zone.run(() => { this.isPlaying = true; });
+    });
+
+    this.widget.bind(SC.Widget.Events.PAUSE, () => {
+      this.zone.run(() => { this.isPlaying = false; });
+    });
+
+    this.widget.bind(SC.Widget.Events.FINISH, () => {
+      this.zone.run(() => { this.nextTrack(); }); // Pula para a próxima quando a música acaba
+    });
+  }
+
+  loadTrack(index: number, autoPlay: boolean): void {
+    this.trackIndex = index;
+    this.currentTrack = this.tracks[index];
+
+    // Anima a troca de informações
+    gsap.fromTo(['.track-name', '.artist-name', '.description', '.vinyl-center img'],
+      { opacity: 0, y: 10 },
+      { opacity: 1, y: 0, duration: 0.4, stagger: 0.1 }
+    );
+
+    // Carrega a nova música no widget
+    this.widget.load(this.tracks[index].url, {
+      auto_play: autoPlay
+    });
+
+    if (!autoPlay) {
+      this.isPlaying = false;
+    }
+  }
+
+  // --- MÉTODOS DE CONTROLE CHAMADOS PELO HTML ---
+
+  togglePlayPause(): void {
+    this.widget.toggle();
+  }
+
+  prevTrack(): void {
+    const newIndex = (this.trackIndex - 1 + this.tracks.length) % this.tracks.length;
+    this.loadTrack(newIndex, true);
+  }
+
+  nextTrack(): void {
+    const newIndex = (this.trackIndex + 1) % this.tracks.length;
+    this.loadTrack(newIndex, true);
+  }
+
+  onVolumeChange(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    this.currentVolume = Number(target.value);
+    this.widget.setVolume(this.currentVolume / 100);
+  }
+
+  // Animação da seta (continua igual)
   initArrow(): void {
     const arrowCircle = document.querySelector('.arrow-circle');
     if (!arrowCircle) return;
-
-    arrowCircle.addEventListener('mouseenter', () => {
-      gsap.to(arrowCircle, { scale: 1.1, duration: 0.3 });
-    });
-    arrowCircle.addEventListener('mouseleave', () => {
-      gsap.to(arrowCircle, { scale: 1, duration: 0.3 });
-    });
-    arrowCircle.addEventListener('click', () => {
-      gsap.to(arrowCircle, { rotation: "+=360", duration: 0.6, ease: "power2.out" });
-    });
+    arrowCircle.addEventListener('mouseenter', () => gsap.to(arrowCircle, { scale: 1.1, duration: 0.3 }));
+    arrowCircle.addEventListener('mouseleave', () => gsap.to(arrowCircle, { scale: 1, duration: 0.3 }));
+    arrowCircle.addEventListener('click', () => gsap.to(arrowCircle, { rotation: "+=360", duration: 0.6, ease: "power2.out" }));
   }
 }
